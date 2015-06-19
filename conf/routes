@@ -1,0 +1,37 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET           /                                       controllers.Application.index()
+
+GET           /v1/smsAnswer                           controllers.NgoTwilioApp.smsAnswer()
+
+POST          /v1/createUser                          controllers.NGOUIApp.createUser()
+POST          /v1/authenticate                        controllers.NGOUIApp.authenticateUser()
+
+GET           /v1/districts                           controllers.NGOUIApp.getDistricts
+GET           /v1/district/:districtName              controllers.NGOUIApp.getDistrict(districtName :String )
+GET           /v1/districtCrop/:districtName          controllers.NGOUIApp.getDistrictCrops(districtName :String )
+
+GET           /v1/crops                               controllers.NGOUIApp.getCrops()
+GET           /v1/registration/:districtName          controllers.NGOUIApp.getRegistrationsByDistrict(districtName :String )
+GET           /v1/registrations                       controllers.NGOUIApp.getRegistrations()
+
+GET           /v1/meetings                            controllers.NGOUIApp.getAllTheMeetings()
+GET           /v1/meetings/:creatorPhoneNumber        controllers.NGOUIApp.getMeetingsByCreator(creatorPhoneNumber :String )
+POST          /v1/meeting                             controllers.NGOUIApp.createMeeting()
+DELETE        /v1/meeting                             controllers.NGOUIApp.deleteMeetingsByCreator()
+
+
+GET           /v1/rsvps/:meetingid                    controllers.NGOUIApp.fetchMeetingRSVPs(meetingid :String)
+
+PUT           /v1/createUser                          controllers.NGOUIApp.createUser()
+
+GET           /v1/ws                                  controllers.Application.wsIndex()
+
+POST          /v1/sendmessagetodistricts              controllers.NGOUIApp.sendMessageToDistricts()
+
+# Map static resources from the /public folder to the /assets URL path
+GET           /assets/*file                           controllers.Assets.at(path="/public", file)
+

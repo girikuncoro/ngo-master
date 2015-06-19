@@ -1,0 +1,77 @@
+/* app css stylesheet */
+
+.menu {
+  list-style: none;
+  border-bottom: 0.1em solid black;
+  margin-bottom: 2em;
+  padding: 0 0 0.5em;
+}
+
+.menu:before {
+  content: "[";
+}
+
+.menu:after {
+  content: "]";
+}
+
+.menu > li {
+  display: inline;
+}
+
+.menu > li:before {
+  content: "|";
+  padding-right: 0.3em;
+}
+
+.menu > li:nth-child(1):before {
+  content: "";
+  padding: 0;
+}
+
+.small-alert {
+  padding: 6px 12px;
+  margin: 0;
+}
+
+ul.nav-tabs li {
+  cursor: pointer;
+  cursor: hand;
+}
+
+.sign-in-section form {
+  max-width: 400px;
+}
+
+.top-20px {
+  margin-top: 20px;
+}
+
+.top-70px {
+  margin-top: 70px;
+}
+
+.right-5px {
+  margin-right: 5px;
+}
+
+.navbar-nav li a{
+  cursor: pointer;
+  cursor: hand;
+}
+
+.glyphicon-sm {
+  font-size: 10px;
+}
+
+.nav-text {
+  color: #FFFFFF;
+  padding: 15px;
+  line-height: 20px;
+  position: relative;
+  display: block;
+}
+
+a, a:link, a:hover, a:visited, a:active {
+  text-decoration: none;
+}

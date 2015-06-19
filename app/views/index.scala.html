@@ -1,0 +1,546 @@
+@main("NGO") {
+<div ng-controller="MainController">
+
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">NGO Admin</a>
+            </div>
+
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a ng-click="showCrops()">Crops</a>
+                    </li>
+                    <li>
+                        <a ng-click="showPhoneNumbers()">Phone Numbers</a>
+                    </li>
+                    <li>
+                        <a ng-click="showDistricts()">Districts</a>
+                    </li>
+                    <li>
+                        <a ng-click="showMeetings()">Meetings</a>
+                    </li>
+                    <li>
+                        <a ng-click="showBroadcast()">Broadcast</a>
+                    </li>
+                    <li>
+                        <a ng-click="showHelp()">Help</a>
+                    </li>
+                </ul>
+
+                <ul class="nav navbar-nav pull-right" ng-show="vm.currentUser">
+                    <li>
+                        <span class="nav-text">Logged in as {{ vm.currentUser }}</span>
+                    </li>
+                    <li>
+                        <a ng-click="logout()">Log out</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <div class="container top-70px" ng-if="vm.currentUser">
+        <div ng-show="vm.showCropsSection">
+            <br>
+
+            <div ng-show="!allCrops.length">
+                You do not currently have any crops registered.
+            </div>
+
+            <div ng-show="allCrops.length">
+                <div class="row">
+                    <h3 style="margin-left: 15px;">Crops
+                        <button type="button" class="pull-right btn btn-default" ng-csv="allCrops" csv-header="['DISTRICT', 'CROPNAME', 'ATTRIBUTE', 'QUANTITY', 'CREATEDATE', 'UPDATEDATE']" filename="crops.csv">Download Crops CSV</button>
+                    </h3>
+                </div>
+
+                <br>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <input class="form-control" placeholder="Filter district" ng-model="search.district">
+                    </div>
+                    <div class="col-sm-3">
+                        <input class="form-control" placeholder="Filter crop" ng-model="search.cropname">
+                    </div>
+                    <div class="col-sm-3">
+                        <input class="form-control" placeholder="Filter quantity" ng-model="search.quantity">
+                    </div>
+                    <div class="col-sm-3">
+                        <input class="form-control" placeholder="Filter status" ng-model="search.attribute">
+                    </div>
+
+                </div>
+                <table class="table table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th>
+                            <a href="" ng-click="predicate = 'district'; reverse=!reverse">District
+                                <span ng-show="predicate == 'district' && !reverse" class="glyphicon glyphicon-sm glyphicon-chevron-down"></span>
+                                <span ng-show="predicate == 'district' && reverse" class="glyphicon glyphicon-sm glyphicon-chevron-up"></span>
+                            </a>
+                        </th>
+                        <th>
+                            <a href="" ng-click="predicate = 'cropname'; reverse=!reverse">Name
+                                <span ng-show="predicate == 'cropname' && !reverse" class="glyphicon glyphicon-sm glyphicon-chevron-down"></span>
+                                <span ng-show="predicate == 'cropname' && reverse" class="glyphicon glyphicon-sm glyphicon-chevron-up"></span>
+                            </a>
+                        </th>
+                        <th>
+                            <a href="" ng-click="predicate = 'quantity'; reverse=!reverse">Quantity
+                                <span ng-show="predicate == 'quantity' && !reverse" class="glyphicon glyphicon-sm glyphicon-chevron-down"></span>
+                                <span ng-show="predicate == 'quantity' && reverse" class="glyphicon glyphicon-sm glyphicon-chevron-up"></span>
+                            </a>
+                        </th>
+                        <th>
+                            <a href="" ng-click="predicate = 'attribute'; reverse=!reverse">Status
+                                <span ng-show="predicate == 'attribute' && !reverse" class="glyphicon glyphicon-sm glyphicon-chevron-down"></span>
+                                <span ng-show="predicate == 'attribute' && reverse" class="glyphicon glyphicon-sm glyphicon-chevron-up"></span>
+                            </a>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="crop in allCrops | orderBy:predicate:reverse | filter:search">
+                        <td>{{crop.district}}</td>
+                        <td>{{crop.cropname}}</td>
+                        <td>{{crop.quantity}}</td>
+                        <td>{{crop.attribute}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div ng-show="vm.showPhoneNumbersSection">
+            <br>
+            <div class="row">
+                <h3 style="margin-left: 15px;">Phone Numbers
+                    <button type="button" class="pull-right btn btn-default" ng-csv="allRegistrations" csv-header="['DISTRICT', 'PHONENUMBER', 'UPDATEDATE', 'CREATEDATE']" filename="phonenumbers.csv">Download Phone Numbers CSV</button>
+                </h3>
+            </div>
+            <br>
+
+            <div ng-show="!allRegistrations.length">
+                You do not currently have any numbers registered.
+            </div>
+            <div ng-show="allRegistrations.length">
+                <div class="row">
+                    <div class="col-md-3">
+                        <input class="form-control" placeholder="Filter district" ng-model="search.district">
+                    </div>
+                    <div class="col-md-3">
+                        <input class="form-control" placeholder="Filter number" ng-model="search.phonenumber">
+                    </div>
+
+
+                </div>
+
+                <table class="table table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th>
+                            <a href="" ng-click="predicate = 'district'; reverse=!reverse">District
+                                <span ng-show="predicate == 'district' && !reverse" class="glyphicon glyphicon-sm glyphicon-chevron-down"></span>
+                                <span ng-show="predicate == 'district' && reverse" class="glyphicon glyphicon-sm glyphicon-chevron-up"></span>
+                            </a>
+                        </th>
+                        <th>
+                            <a href="" ng-click="predicate = 'phonenumber'; reverse=!reverse">Phone Number
+                                <span ng-show="predicate == 'phonenumber' && !reverse" class="glyphicon glyphicon-sm glyphicon-chevron-down"></span>
+                                <span ng-show="predicate == 'phonenumber' && reverse" class="glyphicon glyphicon-sm glyphicon-chevron-up"></span>
+                            </a>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="reg in allRegistrations | orderBy:predicate:reverse | filter:search">
+                        <td>{{reg.district}}</td>
+                        <td>{{reg.phonenumber}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div ng-show="vm.showDistrictsSection">
+            <br>
+            <div class="row">
+                <h3 style="margin-left: 15px;">Districts
+                    <button type="button" class="pull-right btn btn-default" ng-show="districts.length" ng-csv="districts" csv-header="['DISTRICT', 'CREATEDATE', 'UPDATEDATE']" filename="districts.csv">Download Districts CSV</button>
+                </h3>
+            </div>
+            <br>
+
+            <div ng-show="!districts.length">
+                You do not currently have any districts registered.
+            </div>
+
+            <div ng-show="districts.length" class="row">
+                <div class="col-md-3">
+                    <select class="col-md-3 form-control" ng-model="vm.selectedDistrict" ng-options="d as d.district for d in districts" ng-change="updateSelection()">
+                        <option value="" disabled selected>Select a district</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <div ng-show="districts.length && vm.selectedDistrict" class="row">
+                <div class="col-md-6">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                        <tr>
+                            <th><h4>Registered Phone Numbers</h4></th>
+                            <th>
+                                <input class="form-control" placeholder="Filter phone numbers" ng-model="vm.phoneNumberFilter">
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="phoneNumber in phoneNumbers | filter:vm.phoneNumberFilter">
+                            <td>{{phoneNumber.phonenumber}}</td>
+                            <td></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-6">
+                    <table class="table table-striped table-hover col-md-6">
+                        <thead>
+                        <tr>
+                            <th><h4>Crops</h4></th>
+                            <th></th>
+                            <th style="width:200px;">
+                                <input class="form-control" placeholder="Filter crops" ng-model="vm.cropFilter">
+                            </th>
+                        </tr>
+                        <tr>
+                            <th>Name</th>
+                            <th>Quantity</th>
+                            <th>Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="crop in crops | filter:vm.cropFilter">
+                            <td>{{crop.cropname}}</td>
+                            <td>{{crop.quantity}}</td>
+                            <td>{{crop.attribute}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div ng-show="vm.showMeetingsSection" id="meeting-tab">
+            <br>
+
+            <div class="row">
+                <h3 style="margin-left: 15px;">
+                    Current Meetings
+                    <button type="button" class="pull-right btn btn-default" ng-csv="meetings" csv-header="['DISTRICT', 'MEETINGDATE', 'ID', 'NOTE']" filename="meetings.csv">Download Meetings CSV</button>
+                    <button class="pull-right btn btn-default right-5px" ng-click="vm.hideCreateMeetingSection = !vm.hideCreateMeetingSection">Create a New Meeting</button>
+                </h3>
+            </div>
+            <br>
+
+            <div collapse="vm.hideCreateMeetingSection">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="district" class="col-sm-2 control-label">District</label>
+                        <div class="col-sm-3">
+                            <select id="district" class="form-control" ng-model="vm.selectedDistrict" ng-options="d.district as d.district for d in districts">
+                                <option value="" disabled selected>Select a district</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="meetingdate" class="col-sm-2 control-label">Date</label>
+                        <div class="col-sm-3">
+                            <!--<input type="datetime-local" id="meetingdate" class="form-control" name="meetingdate" step="60" />-->
+                            <div id="meetingdate" style="display:inline-block;">
+                                <datepicker ng-model="vm.meetingDate" show-weeks="true" class="well well-sm"></datepicker>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="meetingtime" class="col-sm-2 control-label">Time</label>
+                        <div class="col-sm-3" id="meetingtime">
+                            <timepicker ng-model="vm.meetingTime" show-meridian="false"></timepicker>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="duration" class="col-sm-2 control-label">Duration (minutes)</label>
+                        <div class="col-sm-3">
+                            <input type="text" id="duration" class="form-control" name="duration" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="note" class="col-sm-2 control-label">Notes</label>
+                        <div class="col-sm-3">
+                            <textarea id="note" class="form-control" name="note" rows="4" cols="50"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="button" class="btn btn-default" ng-click="createMeeting()">Create</button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+
+            <hr>
+            <div ng-show="!meetings.length">
+                You do not currently have any meetings registered.
+            </div>
+
+            <div ng-show="meetings.length">
+
+                <table class="table table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th>&nbsp;</th>
+                        <th>
+                            <a href="" ng-click="predicate = 'meetingdate'; reverse=!reverse">Date
+                                <span ng-show="predicate == 'meetingdate' && !reverse" class="glyphicon glyphicon-sm glyphicon-chevron-down"></span>
+                                <span ng-show="predicate == 'meetingdate' && reverse" class="glyphicon glyphicon-sm glyphicon-chevron-up"></span>
+                            </a>
+                        </th>
+                        <th>
+                            <a href="" ng-click="predicate = 'district'; reverse=!reverse">District
+                                <span ng-show="predicate == 'district' && !reverse" class="glyphicon glyphicon-sm glyphicon-chevron-down"></span>
+                                <span ng-show="predicate == 'district' && reverse" class="glyphicon glyphicon-sm glyphicon-chevron-up"></span>
+                            </a>
+                        </th>
+                        <th>
+                            <a href="" ng-click="predicate = 'meetingid'; reverse=!reverse">ID
+                                <span ng-show="predicate == 'meetingid' && !reverse" class="glyphicon glyphicon-sm glyphicon-chevron-down"></span>
+                                <span ng-show="predicate == 'meetingid' && reverse" class="glyphicon glyphicon-sm glyphicon-chevron-up"></span>
+                            </a>
+                        </th>
+                        <th>
+                            <a href="" ng-click="predicate = 'note'; reverse=!reverse">Note
+                                <span ng-show="predicate == 'note' && !reverse" class="glyphicon glyphicon-sm glyphicon-chevron-down"></span>
+                                <span ng-show="predicate == 'note' && reverse" class="glyphicon glyphicon-sm glyphicon-chevron-up"></span>
+                            </a>
+                        </th>
+                        <th>&nbsp;</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="meeting in meetings | orderBy:predicate:reverse | filter:search" id="{{ 'meeting-' + meeting.meetingid }}">
+                        <td>
+                            <button ng-if="meeting.status!='Cancelled'" type="button" class="btn btn-default btn-small btn-info" aria-label="Left Align" ng-click="getMeetingDetails(meeting.meetingid)">
+                                <span class="glyphicon glyphicon-info-sign"></span>
+                            </button>
+
+                            <button ng-if="meeting.status == 'Cancelled'" type="button" class="btn btn-default btn-small btn-info" aria-label="Left Align" disabled>
+                                <span class="glyphicon glyphicon-info-sign"></span>
+                            </button>
+
+                        </td>
+                        <td>{{meeting.meetingdate | date:"yyyy/MM/dd HH:mm"}}</td>
+                        <td>{{meeting.district}}</td>
+                        <td>{{meeting.meetingid}}</td>
+                        <td>{{meeting.note}}</td>
+                        <td ng-if="meeting.status=='Cancelled'"><span class="pull-right">{{meeting.status}}</span></td>
+                        <td ng-if="meeting.status!='Cancelled'"><button class="btn btn-danger pull-right" ng-click="deleteMeeting(meeting.meetingid)">Cancel</button></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div ng-show="vm.showBroadcastSection">
+            <br>
+            <form class="form-horizontal" method="POST">
+                <div class="form-group">
+                    <label for="broadcast-district" class="col-sm-2 control-label">Broadcast District</label>
+                    <div class="col-sm-3">
+                        <select id="broadcast-district" class="form-control" ng-model="vm.selectedDistrict" ng-options="d.district as d.district for d in districts">
+                            <option value="" disabled selected>Select a district</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="broadcastMessage" class="col-sm-2 control-label">Message</label>
+                    <div class="col-sm-3">
+                        <textarea id="broadcastMessage" name="message" class="form-control" rows="4" cols="50" placeholder="Type the message to broadcast."></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="button" class="btn btn-default" ng-click="broadcastMessage()">Broadcast Message</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div ng-show="vm.showHelpSection">
+            <br>
+            <table class="table table-striped table-hover">
+                <thead>
+                <tr>
+                    <th>Command</th>
+                    <th>sms key</th>
+                    <th>Example</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Tutorial</td>
+                    <td>T</td>
+                    <td>T</td>
+                </tr>
+                <tr>
+                    <td>Register District</td>
+                    <td>rd:DISTRICT_NAME</td>
+                    <td>rd:SF</td>
+                </tr>
+                <tr>
+                    <td>List Districts</td>
+                    <td>ld</td>
+                    <td>ld</td>
+                </tr>
+                <tr>
+                    <td>Register PhoneNumber</td>
+                    <td>rn/rp:DISTRICT_NAME</td>
+                    <td>rp:SF</td>
+                </tr>
+                <tr>
+                    <td>Plant</td>
+                    <td>p</td>
+                    <td>p:SF:corn:100</td>
+                </tr>
+                <tr>
+                    <td>Harvest</td>
+                    <td>h</td>
+                    <td>h:SF:corn:10</td>
+                </tr>
+                <tr>
+                    <td>Sell</td>
+                    <td>s</td>
+                    <td>s:SF:corn:10</td>
+                </tr>
+                <tr>
+                    <td>Schedule Meeting</td>
+                    <td>sm:DATEXDUATION:NOTE</td>
+                    <td>sm:SF:June 5, 2015, 17-30X45:meeting message</td>
+                </tr>
+                <tr>
+                    <td>Cancel Meeting</td>
+                    <td>dm</td>
+                    <td>dm:SF</td>
+                </tr>
+                <tr>
+                    <td>List RSVPs</td>
+                    <td>rsvl:MEETING_ID</td>
+                    <td>rsvl:JSX (Case Sensitive)</td>
+                </tr>
+                <tr>
+                    <td>RSVP</td>
+                    <td>RSVP:MEETING_ID:RESPONSE</td>
+                    <td>RSVP:JSX:Yes (Case Sensitive)</td>
+                </tr>
+                <tr>
+                    <td>Broadcast Everyone</td>
+                    <td>bca:message</td>
+                    <td>bca:Hi Everyone</td>
+                </tr>
+                <tr>
+                    <td>Broadcast Group</td>
+                    <td>bc:message</td>
+                    <td>bc:SF:Hi SF</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <div class="container top-70px sign-in-section" ng-if="!vm.currentUser">
+        <tabset>
+            <tab heading="Log In" active="vm.logInTabActive">
+                <br>
+                <form>
+                    <div class="form-group">
+                        <label for="login-email-input">Email address</label>
+                        <input type="email" ng-model="logInInfo.emailAddress" class="form-control" id="login-email-input" placeholder="Email">
+                        <div class="alert alert-warning small-alert" ng-show="liEmailRequired">Required</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password-input">Password</label>
+                        <input type="password" ng-model="logInInfo.password" class="form-control" id="login-password-input" placeholder="Password">
+                        <div class="alert alert-warning small-alert" ng-show="liPasswordRequired">Required</div>
+                    </div>
+                    <div class="alert alert-danger" ng-show="vm.loginError">{{vm.loginError}}</div>
+                    <button class="btn btn-primary" ng-click="logIn()" ng-disabled="vm.loggingIn">Log in</button>
+                    &nbsp;&nbsp;&nbsp;&nbsp;Need an account?&nbsp;<button class="btn btn-default" ng-click="vm.signUpTabActive = true">Sign up</button>
+                    <br><br>
+                </form>
+            </tab>
+            <tab heading="Sign Up" active="vm.signUpTabActive">
+                <br>
+                <form>
+                    <div class="well well-sm twilio-account-info">
+                        <div class="form-group">To use this administrative portal, you must enter the Twilio account credentials corresponding with your existing NGO application. These are found on your <a href="https://twilio.com">Twilio.com</a> account dashboard.</div>
+
+                        <div class="form-group">
+                            <label for="signup-twilio-sid">Twilio Account SID*</label>
+                            <input type="text" ng-model="signUpInfo.twilioSid" class="form-control" id="signup-twilio-sid" placeholder="Twilio Account SID">
+                            <div class="alert alert-warning small-alert" ng-show="suTwilioSidRequired">Required</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-twilio-auth">Twilio Auth Token*</label>
+                            <input type="password" ng-model="signUpInfo.twilioAuth" class="form-control" id="signup-twilio-auth" placeholder="Twilio Auth Token">
+                            <div class="alert alert-warning small-alert" ng-show="suTwilioAuthRequired">Required</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-email-input">Email address*</label>
+                        <input type="email" ng-model="signUpInfo.email" class="form-control" id="signup-email-input" placeholder="Email">
+                        <div class="alert alert-warning small-alert" ng-show="suEmailRequired">Required</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-phone-input">Phone number*</label>
+                        <input type="text" ng-model="signUpInfo.phone" class="form-control" id="signup-phone-input" placeholder="Phone">
+                        <div class="alert alert-warning small-alert" ng-show="suPhoneRequired">Required</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-password-input">Password*</label>
+                        <input type="password" ng-model="signUpInfo.password" class="form-control" id="signup-password-input" placeholder="Password">
+                        <div class="alert alert-warning small-alert" ng-show="suPasswordRequired">Required</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-password-input">Confirm Password*</label>
+                        <input type="password" ng-model="signUpInfo.confirmPassword" class="form-control" id="signup-confirm-password-input" placeholder="Type Password Again">
+                        <div class="alert alert-warning small-alert" ng-show="suConfirmPasswordRequired">Required</div>
+                    </div>
+                    *Required<br><br>
+                    <div class="alert alert-danger" ng-show="vm.signUpError">{{vm.signUpError}}</div>
+                    <button class="btn btn-primary" ng-click="signUp()" ng-disabled="vm.signingUp">Sign up</button>
+                    &nbsp;&nbsp;&nbsp;&nbsp;Existing User?&nbsp;<button class="btn btn-default" ng-click="vm.logInTabActive = true">Log in</button>
+                    <br><br>
+                </form>
+            </tab>
+        </tabset>
+    </div>
+    <div id="rsvpModals">
+
+    </div>
+</div>
+}
+
